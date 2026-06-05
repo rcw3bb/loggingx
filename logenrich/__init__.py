@@ -1,12 +1,11 @@
 """
-loggingx package.
+logenrich package.
 
 A Python library that augments the standard logging module.
 Exposes setup_logger for simplified, INI-driven logging configuration.
 
 Author: Ronaldo Webb
-Since: 1.0.0
-"""
+Since: 1.0.0"""
 
 import logging
 import logging.config

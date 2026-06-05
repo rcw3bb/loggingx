@@ -1,5 +1,5 @@
 [project]
-name = "loggingx"
+name = "logenrich"
 version = "1.0.0"
 description = "A Python library that augments the standard logging module"
 readme = "README.md"

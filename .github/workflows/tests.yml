@@ -26,7 +26,7 @@ jobs:
         run: poetry install
 
       - name: Run linter
-        run: poetry run pylint loggingx
+        run: poetry run pylint logenrich
 
       - name: Run tests with coverage
-        run: poetry run pytest --cov=loggingx tests --cov-report term-missing --cov-fail-under=90
+        run: poetry run pytest --cov=logenrich tests --cov-report term-missing --cov-fail-under=90

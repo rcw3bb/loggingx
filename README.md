@@ -1,4 +1,4 @@
-# loggingx v1.0.0
+# logenrich v1.0.0
 
 > A Python library that augments the standard `logging` module with simplified, INI-driven configuration.
 
@@ -9,18 +9,18 @@
 ## Installation
 
 ```bash
-pip install loggingx
+pip install logenrich
 ```
 
 ## Usage
 
-Import `setup_logger` directly from the `loggingx` package:
+Import `setup_logger` directly from the `logenrich` package:
 
 ```python
-from loggingx import setup_logger
+from logenrich import setup_logger
 
 logger = setup_logger(__name__)
-logger.info("Hello from loggingx!")
+logger.info("Hello from logenrich!")
 ```
 
 `setup_logger` searches upward from the current working directory for a `logging.ini` file and caches the resolved path for subsequent calls. If no configuration file is found, it falls back to `basicConfig` at `INFO` level.
@@ -55,7 +55,7 @@ Place a `logging.ini` file in your project root. The bundled default configures 
 | Handler | Target         | Format                                                          |
 |---------|----------------|-----------------------------------------------------------------|
 | Console | `sys.stderr`   | `%(asctime)s - %(name)s - %(levelname)s - %(message)s`          |
-| File    | `loggingx.log` | `%(asctime)s [%(levelname)s] %(name)s - %(message)s`            |
+| File    | `logenrich.log` | `%(asctime)s [%(levelname)s] %(name)s - %(message)s`            |
 
 Example `logging.ini`:
 
@@ -81,7 +81,7 @@ args=(sys.stderr,)
 [handler_fileHandler]
 class=FileHandler
 formatter=logFormatter
-args=('loggingx.log', 'a')
+args=('logenrich.log', 'a')
 
 [formatter_logFormatter]
 format=%(asctime)s [%(levelname)s] %(name)s - %(message)s
@@ -103,13 +103,13 @@ poetry install
 ### Running Tests
 
 ```bash
-poetry run pytest --cov=loggingx tests --cov-report html
+poetry run pytest --cov=logenrich tests --cov-report html
 ```
 
 ### Formatting and Linting
 
 ```bash
-poetry run black loggingx; poetry run pylint loggingx
+poetry run black logenrich; poetry run pylint logenrich
 ```
 
 Pylint must score **10/10**. Minimum test coverage is **80%**.
