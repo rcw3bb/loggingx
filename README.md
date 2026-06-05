@@ -114,6 +114,30 @@ poetry run black loggingx; poetry run pylint loggingx
 
 Pylint must score **10/10**. Minimum test coverage is **80%**.
 
+## Publishing to PyPI
+
+### Prerequisites
+
+- A [PyPI](https://pypi.org/) account with an API token.
+
+### Configure the token
+
+```bash
+poetry config pypi-token.pypi <your-token>
+```
+
+### Build and publish
+
+```bash
+poetry publish --build
+```
+
+This builds the source distribution and wheel, then uploads them to PyPI in one step.
+
+> **Note:** PyPI releases are immutable. Once a version is published, it cannot be overwritten.  
+> To fix a mistake, yank the release via the PyPI web UI and publish a new version.
+
+
 ## [Changelog](CHANGELOG.md)
 
 See [CHANGELOG.md](CHANGELOG.md) for the full version history.
