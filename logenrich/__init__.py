@@ -12,7 +12,7 @@ import logging.config
 import threading
 from pathlib import Path
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __all__ = ["setup_logger"]
 
 _NOT_FOUND: object = object()  # pylint: disable=invalid-name
@@ -25,6 +25,11 @@ def _find_logging_ini(start_dir: str, filename: str) -> str | None:
     """
     Walk up the directory tree from start_dir looking for filename.
 
+    Traversal is bounded by the current working directory: upward search
+    continues only while start_dir (and each successive parent) is within
+    the current working directory.  If start_dir is outside the current
+    working directory, only that single directory is checked.
+
     Args:
         start_dir: Directory to begin the upward search from.
         filename: Name of the configuration file to locate.
@@ -32,15 +37,17 @@ def _find_logging_ini(start_dir: str, filename: str) -> str | None:
     Returns:
         Absolute path to the first matching file found, or None.
     """
-    current = Path(start_dir)
+    cwd = Path.cwd().resolve()
+    current = Path(start_dir).resolve()
+    within_cwd = current.is_relative_to(cwd)
+
     while True:
         candidate = current / filename
         if candidate.is_file():
             return str(candidate)
-        parent = current.parent
-        if parent == current:
+        if not within_cwd or current == cwd:
             break
-        current = parent
+        current = current.parent
     return None
 
 

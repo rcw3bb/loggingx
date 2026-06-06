@@ -1,4 +1,4 @@
-# logenrich v1.0.0
+# logenrich v1.0.1
 
 > A Python library that augments the standard `logging` module with simplified, INI-driven configuration.
 

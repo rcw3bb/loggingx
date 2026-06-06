@@ -1,6 +1,6 @@
 [project]
 name = "logenrich"
-version = "1.0.0"
+version = "1.0.1"
 description = "A Python library that augments the standard logging module"
 readme = "README.md"
 license = {file = "LICENSE"}
