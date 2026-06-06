@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1 - 2026-06-07
+
+### Changed
+- `_find_logging_ini` now bounds upward directory traversal to the current working directory (CWD); search stops at CWD and will not climb above it.
+- When `start_dir` is outside CWD, only that single directory is inspected instead of traversing all the way to the filesystem root.
+
 ## 1.0.0 - 2026-06-04
 
 ### Added

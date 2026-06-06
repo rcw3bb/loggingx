@@ -45,21 +45,22 @@ class TestFindLoggingIni:
         assert result == str(ini)
 
     def test_finds_file_in_parent_dir(self, tmp_path):
-        """Returns the path when the file exists one level up."""
+        """Returns the path when the file exists one level up, within CWD."""
         ini = tmp_path / "logging.ini"
         ini.write_text("[loggers]\nkeys=root\n")
         child = tmp_path / "subdir"
         child.mkdir()
-        result = logenrich._find_logging_ini(  # pylint: disable=protected-access
-            str(child), "logging.ini"
-        )
+        with patch("logenrich.Path.cwd", return_value=tmp_path):
+            result = logenrich._find_logging_ini(  # pylint: disable=protected-access
+                str(child), "logging.ini"
+            )
         assert result == str(ini)
 
     def test_returns_none_when_not_found(self, tmp_path):
-        """Returns None when the file does not exist anywhere in the tree."""
+        """Returns None when the file does not exist anywhere within the CWD tree."""
         child = tmp_path / "a" / "b"
         child.mkdir(parents=True)
-        with patch("logenrich.Path.is_file", return_value=False):
+        with patch("logenrich.Path.cwd", return_value=tmp_path):
             result = logenrich._find_logging_ini(  # pylint: disable=protected-access
                 str(child), "logging.ini"
             )
@@ -72,6 +73,46 @@ class TestFindLoggingIni:
         result = logenrich._find_logging_ini(  # pylint: disable=protected-access
             str(tmp_path), "custom.ini"
         )
+        assert result == str(ini)
+
+    def test_does_not_traverse_above_cwd(self, tmp_path):
+        """Traversal stops at CWD; a file above CWD is not found."""
+        ini = tmp_path / "logging.ini"  # placed above cwd_dir
+        ini.write_text("[loggers]\nkeys=root\n")
+        cwd_dir = tmp_path / "project"
+        cwd_dir.mkdir()
+        with patch("logenrich.Path.cwd", return_value=cwd_dir):
+            result = logenrich._find_logging_ini(  # pylint: disable=protected-access
+                str(cwd_dir), "logging.ini"
+            )
+        assert result is None
+
+    def test_outside_cwd_only_checks_start_dir(self, tmp_path):
+        """When start_dir is outside CWD, only that directory is inspected."""
+        cwd_dir = tmp_path / "project"
+        cwd_dir.mkdir()
+        outside = tmp_path / "other" / "subdir"
+        outside.mkdir(parents=True)
+        ini = tmp_path / "other" / "logging.ini"  # parent of outside, not in cwd
+        ini.write_text("[loggers]\nkeys=root\n")
+        with patch("logenrich.Path.cwd", return_value=cwd_dir):
+            result = logenrich._find_logging_ini(  # pylint: disable=protected-access
+                str(outside), "logging.ini"
+            )
+        assert result is None
+
+    def test_outside_cwd_finds_file_in_start_dir(self, tmp_path):
+        """When start_dir is outside CWD but contains the file, it is returned."""
+        cwd_dir = tmp_path / "project"
+        cwd_dir.mkdir()
+        outside = tmp_path / "other"
+        outside.mkdir()
+        ini = outside / "logging.ini"
+        ini.write_text("[loggers]\nkeys=root\n")
+        with patch("logenrich.Path.cwd", return_value=cwd_dir):
+            result = logenrich._find_logging_ini(  # pylint: disable=protected-access
+                str(outside), "logging.ini"
+            )
         assert result == str(ini)
 
 
